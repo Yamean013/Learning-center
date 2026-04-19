@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String          @id @default(cuid())
+  email           String          @unique
+  name            String
+  msObjectId      String?         @unique
+  isAdmin         Boolean         @default(false)
+  allApplications Boolean         @default(false)
+  createdAt       DateTime        @default(now())
+  access          UserAppAccess[]
+  views           View[]
+  downloads       Download[]
+}
+
+model Application {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  createdAt DateTime        @default(now())
+  tutorials Tutorial[]
+  access    UserAppAccess[]
+}
+
+model UserAppAccess {
+  id            String      @id @default(cuid())
+  userId        String
+  applicationId String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, applicationId])
+}
+
+model Tutorial {
+  id            String      @id @default(cuid())
+  title         String
+  description   String?
+  type          String
+  fileUrl       String
+  fileName      String
+  fileSize      Int
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  views         View[]
+  downloads     Download[]
+}
+
+model View {
+  id         String   @id @default(cuid())
+  tutorialId String
+  userId     String
+  createdAt  DateTime @default(now())
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([tutorialId])
+}
+
+model Download {
+  id         String   @id @default(cuid())
+  tutorialId String
+  userId     String
+  createdAt  DateTime @default(now())
+  tutorial   Tutorial @relation(fields: [tutorialId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([tutorialId])
+}

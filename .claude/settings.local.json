@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma *)",
+      "Bash(mkdir -p /Users/mohamedyameen/Desktop/Coding/Claude/learning-center/public/fonts)",
+      "Bash(mkdir -p /Users/mohamedyameen/Desktop/Coding/Claude/learning-center/public/uploads)",
+      "Read(//private/tmp/**)",
+      "Bash(curl -sSL -o satoshi.zip \"https://api.fontshare.com/v2/fonts/download/satoshi\" -w \"HTTP:%{http_code}\\\\n\")",
+      "Bash(curl -sSL -o lufga.zip \"https://api.fontshare.com/v2/fonts/download/lufga\" -w \"HTTP:%{http_code}\\\\n\")",
+      "Bash(unzip -o -q satoshi.zip -d satoshi)",
+      "Bash(cp /tmp/satoshi/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-Variable.woff2 /Users/mohamedyameen/Desktop/Coding/Claude/learning-center/public/fonts/)",
+      "Bash(cp /tmp/satoshi/Satoshi_Complete/Fonts/WEB/fonts/Satoshi-VariableItalic.woff2 /Users/mohamedyameen/Desktop/Coding/Claude/learning-center/public/fonts/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}\\\\n' https://api.fontshare.com/v2/fonts/download/__TRACKED_VAR__)",
+      "Bash(npx tsx *)",
+      "Bash(npx next *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(pkill -f \"next-server\")",
+      "Bash(mkdir -p ~/.local/share/erp-learning-center)",
+      "Bash(mv /Users/mohamedyameen/Desktop/Coding/Claude/learning-center/prisma/dev.db ~/.local/share/erp-learning-center/dev.db)",
+      "Read(//Users/mohamedyameen/.local/share/**)",
+      "Bash(npm uninstall *)",
+      "Bash(ps -o pid,rss,command)",
+      "Bash(awk '{print $2, $6, $11, $12, $13}')",
+      "Bash(pkill -9 -f \"next dev\")",
+      "Bash(pkill -9 -f \"next-server\")",
+      "Bash(pkill -9 -f \"postcss.js\")"
+    ]
+  }
+}
