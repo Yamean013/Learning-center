@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { BarChart3, FileStack, Layers } from "lucide-react";
+import { BarChart3, FileStack, Layers, Users as UsersIcon } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { TopNav } from "@/components/top-nav";
 
@@ -10,6 +10,7 @@ const tabs = [
   { href: "/admin", label: "Dashboard", icon: BarChart3 },
   { href: "/admin/tutorials", label: "Tutorials", icon: FileStack },
   { href: "/admin/applications", label: "Applications", icon: Layers },
+  { href: "/admin/users", label: "Users", icon: UsersIcon },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

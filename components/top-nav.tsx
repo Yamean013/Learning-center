@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MtccMark } from "./mtcc-mark";
 import { ThemeToggle } from "./theme-toggle";
 import { UserMenu } from "./user-menu";
 
@@ -15,8 +16,8 @@ export function TopNav({
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/75 backdrop-blur-md">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="h-8 w-8 rounded-lg bg-primary text-primary-foreground grid place-items-center font-display font-extrabold text-sm group-hover:-rotate-6 transition-transform">
-            E
+          <span className="h-9 w-9 rounded-lg overflow-hidden ring-1 ring-border group-hover:-rotate-6 transition-transform">
+            <MtccMark size={36} className="h-full w-full object-cover" />
           </span>
           <span className="font-display text-sm font-semibold hidden sm:inline">
             {variant === "admin" ? "Admin · ERP Learning Center" : "ERP Learning Center"}
