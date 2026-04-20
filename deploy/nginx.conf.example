@@ -1,0 +1,48 @@
+# Drop this at /etc/nginx/sites-available/erp-lc and symlink to sites-enabled.
+# Replace learning.example.com with your real hostname before enabling.
+# TLS certs are provisioned by certbot (see the deploy guide).
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name learning.example.com;
+
+    # Let certbot serve the ACME challenge over HTTP, redirect everything else.
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name learning.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/learning.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/learning.example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+
+    # CRITICAL: the tutorial upload endpoint has no application-level size cap.
+    # Default Nginx value is 1 MB, which will truncate any real video upload.
+    # 0 disables the check entirely; set a finite cap if you prefer.
+    client_max_body_size 0;
+
+    # Long-running uploads need room to breathe before the proxy times out.
+    proxy_read_timeout 1h;
+    proxy_send_timeout 1h;
+    send_timeout       1h;
+    proxy_request_buffering off;
+
+    # Let Next.js see the real client and know TLS terminated here.
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+    }
+}

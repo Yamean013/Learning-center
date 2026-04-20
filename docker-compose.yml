@@ -1,0 +1,36 @@
+# Production compose file for the Ubuntu VM.
+# Expects a Nginx reverse proxy on the host terminating TLS and forwarding to 127.0.0.1:3000.
+services:
+  web:
+    build: .
+    image: erp-learning-center:latest
+    container_name: erp-lc-web
+    restart: unless-stopped
+    # Bind only to loopback — Nginx on the host handles public traffic + TLS.
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "file:/app/data/app.db"
+      # Rotate this. Must be at least 32 characters. Generate once with:
+      #   openssl rand -base64 48
+      SESSION_SECRET: "${SESSION_SECRET:?set SESSION_SECRET in .env}"
+      # Set to 1 on first boot to seed the default admin + applications.
+      # Set back to 0 after that — the seed is idempotent but noisy in logs.
+      SEED_ON_BOOT: "${SEED_ON_BOOT:-0}"
+      # When you wire up Entra ID, uncomment these:
+      # MS_TENANT_ID: "${MS_TENANT_ID}"
+      # MS_CLIENT_ID: "${MS_CLIENT_ID}"
+      # MS_CLIENT_SECRET: "${MS_CLIENT_SECRET}"
+      # MS_REDIRECT_URI: "${MS_REDIRECT_URI}"
+    volumes:
+      # SQLite database + WAL/journal files.
+      - ./data:/app/data
+      # Uploaded videos/PDFs — unbounded in size, keep on a large disk.
+      - ./uploads:/app/public/uploads
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/login',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
